@@ -1,33 +1,46 @@
 package elements;
 
 import entities.Car;
+import entities.Entity;
 import javafx.animation.AnimationTimer;
+import javafx.event.ActionEvent;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundImage;
 import javafx.scene.layout.BackgroundRepeat;
 import javafx.scene.layout.Pane;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class TrafficPane extends Pane {
+    private final List<Entity> entities = new ArrayList<>();
+
     public TrafficPane() {
         Image image = new Image("/assets/grass.png");
         BackgroundImage backgroundImage = new BackgroundImage(image, BackgroundRepeat.REPEAT, BackgroundRepeat.REPEAT, null, null);
 
         setBackground(new Background(backgroundImage));
 
-        Car car = new Car(5, 5);
-        car.setDestinationX(100);
-        car.setDestinationY(200);
-        this.getChildren().add(car);
 
         AnimationTimer anim = new AnimationTimer() {
             @Override
             public void handle(long now) {
-                car.update();
+                for (Entity entity : entities) {
+                    entity.update();
+                }
             }
         };
 
         anim.start();
+    }
+
+    public void spawnCar() {
+        Car car = new Car(5, 5);
+        car.setDestinationX(100);
+        car.setDestinationY(200);
+        getChildren().add(car);
+        entities.add(car);
     }
 
     @Override
