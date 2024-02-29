@@ -1,10 +1,11 @@
 import elements.TrafficPane;
 import javafx.application.Application;
 import javafx.geometry.Insets;
+import javafx.geometry.Orientation;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.Pane;
+import javafx.scene.layout.FlowPane;
 import javafx.stage.Stage;
 
 public class Main extends Application {
@@ -18,18 +19,23 @@ public class Main extends Application {
 
         BorderPane pane = new BorderPane();
 
-        Pane buttonBar = new Pane();
-        Button button = new Button("Spawn car");
-        button.setPadding(new Insets(20));
+        Button createCarButton = new Button("Spawn car");
+        createCarButton.setPadding(new Insets(20));
+        createCarButton.setOnAction((e) -> trafficPane.spawnCar());
 
-        button.setOnAction((e) -> trafficPane.spawnCar());
-        buttonBar.getChildren().add(button);
+        Button createTruckButton = new Button("Spawn truck");
+        createTruckButton.setPadding(new Insets(20));
+        createTruckButton.setOnAction((e) -> trafficPane.spawnTruck());
+
+        FlowPane buttonBar = new FlowPane(Orientation.VERTICAL);
+        buttonBar.getChildren().addAll(createCarButton, createTruckButton);
 
         pane.setCenter(trafficPane);
         pane.setRight(buttonBar);
 
-        Scene scene = new Scene(pane, 500, 500);
+        Scene scene = new Scene(pane);
 
+        stage.setResizable(false);
         stage.setScene(scene);
         stage.show();
     }
