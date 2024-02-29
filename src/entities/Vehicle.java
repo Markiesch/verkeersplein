@@ -2,13 +2,13 @@ package entities;
 
 import javafx.scene.image.ImageView;
 
-public abstract class Entity extends ImageView {
+public abstract class Vehicle extends ImageView {
     private int destinationX = 0;
     private int destinationY = 0;
 
     protected abstract double getSpeed();
 
-    protected Entity(String url) {
+    protected Vehicle(String url) {
         super(url);
     }
 

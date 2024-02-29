@@ -1,9 +1,8 @@
 package elements;
 
 import entities.Car;
-import entities.Entity;
+import entities.Vehicle;
 import javafx.animation.AnimationTimer;
-import javafx.event.ActionEvent;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundImage;
@@ -14,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TrafficPane extends Pane {
-    private final List<Entity> entities = new ArrayList<>();
+    private final List<Vehicle> entities = new ArrayList<>();
 
     public TrafficPane() {
         Image image = new Image("/assets/grass.png");
@@ -26,7 +25,7 @@ public class TrafficPane extends Pane {
         AnimationTimer anim = new AnimationTimer() {
             @Override
             public void handle(long now) {
-                for (Entity entity : entities) {
+                for (Vehicle entity : entities) {
                     entity.update();
                 }
             }
