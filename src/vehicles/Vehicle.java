@@ -1,7 +1,9 @@
 package vehicles;
 
+import javafx.geometry.Point3D;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
+import javafx.scene.transform.Rotate;
 import movement.Waypoint;
 import movement.WaypointSequence;
 
@@ -26,6 +28,11 @@ public abstract class Vehicle extends ImageView {
         setNextDestination();
         setX(this.destinationX);
         setY(this.destinationY);
+
+        Rotate rotate = new Rotate();
+        rotate.setPivotX(16); // Assuming the vehicle is symmetric
+        rotate.setPivotY(0); // Top edge of the vehicle
+        getTransforms().add(rotate);
     }
 
     private void setNextDestination() {
@@ -67,7 +74,7 @@ public abstract class Vehicle extends ImageView {
     }
 
     private void rotateTo(double angle) {
-        double speed = 2;
+        double speed = 0.75;
 
         double delta = (angle - (getRotate() - 90) + 180) % 360 - 180;
         double newRotation = angle;
