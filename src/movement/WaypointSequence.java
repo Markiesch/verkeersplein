@@ -12,4 +12,8 @@ public class WaypointSequence {
         if (index >= waypoints.length) return null;
         return waypoints[index++];
     }
+
+    public Waypoint[] getWaypoints() {
+        return waypoints;
+    }
 }

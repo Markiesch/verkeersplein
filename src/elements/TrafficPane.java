@@ -15,19 +15,12 @@ import java.util.List;
 public class TrafficPane extends Pane {
     private static final Color ROAD_COLOR = Color.rgb(58, 47, 58);
     private static final Color BG_COLOR = Color.rgb(25, 22, 25);
-    private static final double ROAD_SIZE = 75;
+    private static final double INNER_RADIUS = 50;
+    private static final double ROUND_ABOUT_RADIUS = 100;
+    private static final double ROAD_SIZE = 100;
 
-    private static final double height = 500;
-    private static final double width = 500;
-
-    WaypointSequence waypointSequence = new WaypointSequence(
-            new Waypoint(0, 250),
-            new Waypoint(175, 250),
-            new Waypoint(250, 325),
-            new Waypoint(375, 250),
-            new Waypoint(250, 125),
-            new Waypoint(250, 0)
-    );
+    private static final double height = 750;
+    private static final double width = 750;
 
     private final List<Vehicle> entities = new ArrayList<>();
 
@@ -42,8 +35,8 @@ public class TrafficPane extends Pane {
         getChildren().addAll(
                 roadX,
                 roadY,
-                new Circle(width / 2, height / 2, 125, ROAD_COLOR),
-                new Circle(width / 2, height / 2, 50, BG_COLOR)
+                new Circle(width / 2, height / 2, ROUND_ABOUT_RADIUS + INNER_RADIUS, ROAD_COLOR),
+                new Circle(width / 2, height / 2, INNER_RADIUS, BG_COLOR)
         );
 
         setBackground(new Background(new BackgroundFill(BG_COLOR, null, null)));
@@ -69,6 +62,37 @@ public class TrafficPane extends Pane {
 
 
     public void spawnVehicle(Class<? extends Vehicle> clazz) {
+        WaypointSequence waypointSequence = new WaypointSequence(
+                // Left (start)
+                new Waypoint(0, height / 2 + ROAD_SIZE / 4),
+                new Waypoint((width / 2) - ROUND_ABOUT_RADIUS, (height / 2) + ROAD_SIZE / 4),
+
+                // Bottom
+                new Waypoint(width / 2 - ROAD_SIZE / 4, height / 2 + ROUND_ABOUT_RADIUS),
+                new Waypoint(width / 2 + ROAD_SIZE / 4, height / 2 + ROUND_ABOUT_RADIUS),
+
+                // Right
+                new Waypoint((width / 2) + ROUND_ABOUT_RADIUS, (height / 2) + ROAD_SIZE / 4),
+                new Waypoint((width / 2) + ROUND_ABOUT_RADIUS, (height / 2) - ROAD_SIZE / 4),
+
+                // Top
+                new Waypoint(width / 2 + ROAD_SIZE / 4, height / 2 - ROUND_ABOUT_RADIUS),
+                new Waypoint(width / 2 - ROAD_SIZE / 4, height / 2 - ROUND_ABOUT_RADIUS),
+
+                // Left (end)
+                new Waypoint((width / 2) - ROUND_ABOUT_RADIUS, (height / 2) - ROAD_SIZE / 4),
+                new Waypoint(0, height / 2 - ROAD_SIZE / 4)
+        );
+
+        // Debug waypoints
+        for (Waypoint waypoint : waypointSequence.getWaypoints()) {
+            new Rectangle(5, 5, Color.RED) {{
+                setX(waypoint.getX());
+                setY(waypoint.getY());
+                getChildren().add(this);
+            }};
+        }
+
         try {
             Vehicle vehicle = clazz.getConstructor(WaypointSequence.class).newInstance(waypointSequence);
             getChildren().add(vehicle);
