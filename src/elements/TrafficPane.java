@@ -1,20 +1,24 @@
 package elements;
 
 import javafx.animation.AnimationTimer;
-import javafx.scene.image.Image;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
+import javafx.scene.shape.Rectangle;
 import movement.Waypoint;
 import movement.WaypointSequence;
-import vehicles.Car;
-import vehicles.Truck;
 import vehicles.Vehicle;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class TrafficPane extends Pane {
-    private static final int height = 500;
-    private static final int width = 500;
+    private static final Color ROAD_COLOR = Color.rgb(58, 47, 58);
+    private static final Color BG_COLOR = Color.rgb(25, 22, 25);
+    private static final double ROAD_SIZE = 75;
+
+    private static final double height = 500;
+    private static final double width = 500;
 
     WaypointSequence waypointSequence = new WaypointSequence(
             new Waypoint(0, 250),
@@ -28,16 +32,21 @@ public class TrafficPane extends Pane {
     private final List<Vehicle> entities = new ArrayList<>();
 
     public TrafficPane() {
-        Image image = new Image("/assets/grass.png");
-        BackgroundImage backgroundImage = new BackgroundImage(
-                image,
-                BackgroundRepeat.REPEAT,
-                BackgroundRepeat.REPEAT,
-                null,
-                new BackgroundSize(40, 40, false, false, false, false)
+        Rectangle roadX = new Rectangle(width, ROAD_SIZE, ROAD_COLOR);
+        roadX.setY(height / 2 - ROAD_SIZE / 2);
+
+        Rectangle roadY = new Rectangle(ROAD_SIZE, height, ROAD_COLOR);
+        roadY.setX(width / 2 - ROAD_SIZE / 2);
+
+
+        getChildren().addAll(
+                roadX,
+                roadY,
+                new Circle(width / 2, height / 2, 125, ROAD_COLOR),
+                new Circle(width / 2, height / 2, 50, BG_COLOR)
         );
 
-        setBackground(new Background(backgroundImage));
+        setBackground(new Background(new BackgroundFill(BG_COLOR, null, null)));
 
         setMinWidth(width);
         setMinHeight(height);
@@ -52,12 +61,16 @@ public class TrafficPane extends Pane {
         };
 
         anim.start();
+
+        setOnMouseClicked(e -> {
+            System.out.println(e.getX() + ", " + e.getY());
+        });
     }
 
 
     public void spawnVehicle(Class<? extends Vehicle> clazz) {
         try {
-            Vehicle vehicle = clazz.getDeclaredConstructor(WaypointSequence.class).newInstance(waypointSequence);
+            Vehicle vehicle = clazz.getConstructor(WaypointSequence.class).newInstance(waypointSequence);
             getChildren().add(vehicle);
             entities.add(vehicle);
         } catch (Exception e) {
