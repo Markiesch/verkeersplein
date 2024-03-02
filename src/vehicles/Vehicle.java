@@ -1,8 +1,12 @@
 package vehicles;
 
 import javafx.scene.image.ImageView;
+import movement.Waypoint;
+import movement.WaypointSequence;
 
 public abstract class Vehicle extends ImageView {
+    private final WaypointSequence sequence;
+
     private double destinationX = 0;
     private double destinationY = 0;
 
@@ -12,33 +16,50 @@ public abstract class Vehicle extends ImageView {
      */
     protected abstract double getSpeed();
 
-    protected Vehicle(String url, double x, double y) {
+    protected Vehicle(String url, WaypointSequence waypointSequence) {
         super(url);
-        setX(x);
-        setY(y);
-        setDestinationX(x);
-        setDestinationY(y);
+
+        this.sequence = waypointSequence;
+        setNextDestination();
+        setX(this.destinationX);
+        setY(this.destinationY);
+    }
+
+    private void setNextDestination() {
+        Waypoint waypoint = sequence.next();
+        setDestinationX(waypoint.getX());
+        setDestinationY(waypoint.getY());
     }
 
     /**
      * Update the position of the vehicle
      */
     public void update() {
-        double distance = Math.sqrt(Math.pow(destinationX - getX(), 2) + Math.pow(destinationY - getY(), 2));
+        if (!this.isVisible()) return;
+
+        double distance = Math.sqrt(Math.pow(getDestinationX() - getX(), 2) + Math.pow(getDestinationY() - getY(), 2));
 
         if (distance <= 1) {
-            setDestinationX(Math.random() * 500);
-            setDestinationY(Math.random() * 500);
+            Waypoint waypoint = sequence.next();
+
+            if (waypoint == null) {
+                this.setVisible(false);
+                return;
+            }
+
+            setDestinationX(waypoint.getX());
+            setDestinationY(waypoint.getY());
+
         }
 
         if (distance > 1) {
-            double dx = (destinationX - getX()) / distance;
-            double dy = (destinationY - getY()) / distance;
+            double dx = (getDestinationX() - getX()) / distance;
+            double dy = (getDestinationY() - getY()) / distance;
             setX(getX() + dx * getSpeed());
             setY(getY() + dy * getSpeed());
         }
 
-        double angle = Math.toDegrees(Math.atan2(destinationY - getY(), destinationX - getX()));
+        double angle = Math.toDegrees(Math.atan2(getDestinationY() - getY(), getDestinationX() - getX()));
         setRotate(angle + 90);
     }
 

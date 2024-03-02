@@ -3,6 +3,8 @@ package elements;
 import javafx.animation.AnimationTimer;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
+import movement.Waypoint;
+import movement.WaypointSequence;
 import vehicles.Car;
 import vehicles.Truck;
 import vehicles.Vehicle;
@@ -13,6 +15,15 @@ import java.util.List;
 public class TrafficPane extends Pane {
     private static final int height = 500;
     private static final int width = 500;
+
+    WaypointSequence waypointSequence = new WaypointSequence(
+            new Waypoint(0, 250),
+            new Waypoint(175, 250),
+            new Waypoint(250, 325),
+            new Waypoint(375, 250),
+            new Waypoint(250, 125),
+            new Waypoint(250, 0)
+    );
 
     private final List<Vehicle> entities = new ArrayList<>();
 
@@ -43,22 +54,15 @@ public class TrafficPane extends Pane {
         anim.start();
     }
 
-    /**
-     * Spawn a new car
-     */
-    public void spawnCar() {
-        Car car = new Car(Math.random() * width, Math.random() * height);
-        getChildren().add(car);
-        entities.add(car);
-    }
 
-    /**
-     * Spawn a new car
-     */
-    public void spawnTruck() {
-        Truck truck = new Truck(Math.random() * width, Math.random() * height);
-        getChildren().add(truck);
-        entities.add(truck);
+    public void spawnVehicle(Class<? extends Vehicle> clazz) {
+        try {
+            Vehicle vehicle = clazz.getDeclaredConstructor(WaypointSequence.class).newInstance(waypointSequence);
+            getChildren().add(vehicle);
+            entities.add(vehicle);
+        } catch (Exception e) {
+            System.out.println("Failed to spawn vehicle");
+        }
     }
 
     @Override

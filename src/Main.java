@@ -7,6 +7,8 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 import javafx.stage.Stage;
+import vehicles.Car;
+import vehicles.Truck;
 
 public class Main extends Application {
     public static void main(String[] args) {
@@ -21,11 +23,11 @@ public class Main extends Application {
 
         Button createCarButton = new Button("Spawn car");
         createCarButton.setPadding(new Insets(20));
-        createCarButton.setOnAction((e) -> trafficPane.spawnCar());
+        createCarButton.setOnAction((e) -> trafficPane.spawnVehicle(Car.class));
 
         Button createTruckButton = new Button("Spawn truck");
         createTruckButton.setPadding(new Insets(20));
-        createTruckButton.setOnAction((e) -> trafficPane.spawnTruck());
+        createTruckButton.setOnAction((e) -> trafficPane.spawnVehicle(Truck.class));
 
         FlowPane buttonBar = new FlowPane(Orientation.VERTICAL);
         buttonBar.getChildren().addAll(createCarButton, createTruckButton);

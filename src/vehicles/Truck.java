@@ -1,6 +1,7 @@
 package vehicles;
 
 import javafx.geometry.Rectangle2D;
+import movement.WaypointSequence;
 
 import java.util.Random;
 
@@ -9,8 +10,8 @@ public class Truck extends Vehicle {
 
     private final static int[] positions = { 0, 32, 64, 96, 128 };
 
-    public Truck(double x, double y) {
-        super("/assets/cars.png", x, y);
+    public Truck(WaypointSequence waypointSequence) {
+        super("/assets/cars.png", waypointSequence);
         setViewport(new Rectangle2D(positions[random.nextInt(positions.length)], 0, 32, 64));
     }
 
