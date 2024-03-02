@@ -1,6 +1,7 @@
 package vehicles;
 
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.GridPane;
 import movement.Waypoint;
 import movement.WaypointSequence;
 
@@ -9,6 +10,8 @@ public abstract class Vehicle extends ImageView {
 
     private double destinationX = 0;
     private double destinationY = 0;
+
+    private boolean firstRotation = true;
 
     /**
      * Get the speed of the vehicle
@@ -60,7 +63,25 @@ public abstract class Vehicle extends ImageView {
         }
 
         double angle = Math.toDegrees(Math.atan2(getDestinationY() - getY(), getDestinationX() - getX()));
-        setRotate(angle + 90);
+        rotateTo(angle);
+    }
+
+    private void rotateTo(double angle) {
+        double speed = 2;
+
+        double delta = (angle - (getRotate() - 90) + 180) % 360 - 180;
+        double newRotation = angle;
+
+        if (firstRotation) {
+            newRotation = angle;
+            firstRotation = false;
+        } else if (delta > speed) {
+            newRotation = (getRotate() - 90) + speed;
+        } else if (delta < -speed) {
+            newRotation = (getRotate() - 90) - speed;
+        }
+
+        setRotate(newRotation + 90);
     }
 
     /**
