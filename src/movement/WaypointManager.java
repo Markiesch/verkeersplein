@@ -1,38 +1,73 @@
 package movement;
 
+import java.util.Random;
+
 import static util.Config.*;
 
 public final class WaypointManager {
-    private static final Waypoint exitTop = new Waypoint(0, 0);
-    private static final Waypoint exitRight = new Waypoint(0, 0);
-    private static final Waypoint exitBottom = new Waypoint(0, 0);
-    private static final Waypoint exitLeft = new Waypoint(0, 0);
+    private final Random random = new Random();
 
-    private static final Waypoint topLeft = new Waypoint(0, 0);
-    private static final Waypoint topRight = new Waypoint(0, 0);
-    private static final Waypoint rightTop = new Waypoint(0, 0);
-    private static final Waypoint rightBottom = new Waypoint(0, 0);
-    private static final Waypoint bottomLeft = new Waypoint(0, 0);
-    private static final Waypoint bottomRight = new Waypoint(0, 0);
-    private static final Waypoint leftBottom = new Waypoint(
+    private final Waypoint topLeft = new Waypoint(WORLD_WIDTH / 2 - ROAD_SIZE / 4, WORLD_HEIGHT / 2 - ROUND_ABOUT_RADIUS);
+    private final Waypoint topRight = new Waypoint(WORLD_WIDTH / 2 + ROAD_SIZE / 4, WORLD_HEIGHT / 2 - ROUND_ABOUT_RADIUS);
+
+    private final Waypoint rightTop = new Waypoint((WORLD_WIDTH / 2) + ROUND_ABOUT_RADIUS, (WORLD_HEIGHT / 2) - ROAD_SIZE / 4);
+    private final Waypoint rightBottom = new Waypoint((WORLD_WIDTH / 2) + ROUND_ABOUT_RADIUS, (WORLD_HEIGHT / 2) + ROAD_SIZE / 4);
+
+    private final Waypoint bottomLeft = new Waypoint(WORLD_WIDTH / 2 - ROAD_SIZE / 4, WORLD_HEIGHT / 2 + ROUND_ABOUT_RADIUS);
+    private final Waypoint bottomRight = new Waypoint(WORLD_WIDTH / 2 + ROAD_SIZE / 4, WORLD_HEIGHT / 2 + ROUND_ABOUT_RADIUS);
+
+    private final Waypoint leftBottom = new Waypoint(
             (WORLD_WIDTH / 2) - ROUND_ABOUT_RADIUS,
-            (WORLD_HEIGHT / 2) + ROAD_SIZE / 4,
-            bottomLeft
-    );
-        private static final Waypoint leftTop = new Waypoint(
+            (WORLD_HEIGHT / 2) + ROAD_SIZE / 4);
+        private final Waypoint leftTop = new Waypoint(
                 (WORLD_WIDTH / 2) - ROUND_ABOUT_RADIUS,
-                (WORLD_HEIGHT / 2) - ROAD_SIZE / 4,
-                exitLeft,
-                leftBottom
+                (WORLD_HEIGHT / 2) - ROAD_SIZE / 4
         );
 
-    private static final Waypoint entranceTop = new Waypoint(0, 0, topLeft);
-    private static final Waypoint entranceRight = new Waypoint(0, 0, rightTop);
-    private static final Waypoint entranceBottom = new Waypoint(0, 0, bottomRight);
-    private static final Waypoint entranceLeft = new Waypoint(0, 0, leftBottom);
+    private final Waypoint entranceTop = new Waypoint(WORLD_WIDTH / 2 - ROAD_SIZE / 4, 0);
+    private final Waypoint exitTop = new Waypoint(WORLD_WIDTH / 2 + ROAD_SIZE / 4, 0);
+
+    private final Waypoint entranceRight = new Waypoint(WORLD_WIDTH, WORLD_HEIGHT / 2 - ROAD_SIZE / 4);
+    private final Waypoint exitRight = new Waypoint(WORLD_WIDTH, WORLD_HEIGHT / 2 + ROAD_SIZE / 4);
+
+    private final Waypoint entranceBottom = new Waypoint(WORLD_WIDTH / 2 + ROAD_SIZE / 4, WORLD_HEIGHT);
+    private final Waypoint exitBottom = new Waypoint(WORLD_WIDTH / 2 - ROAD_SIZE / 4, WORLD_HEIGHT);
+
+    private final Waypoint entranceLeft = new Waypoint(0, WORLD_HEIGHT / 2 + ROAD_SIZE / 4);
+    private final Waypoint exitLeft = new Waypoint(0, WORLD_HEIGHT / 2 - ROAD_SIZE / 4);
 
 
-    public static Waypoint[] getStartingWaypoints() {
-        return new Waypoint[] { entranceTop, entranceRight, entranceBottom, entranceLeft };
+    private WaypointManager() {
+        initExits();
+    }
+
+    private void initExits() {
+        entranceLeft.addExit(leftBottom);
+        entranceBottom.addExit(bottomRight);
+        entranceRight.addExit(rightTop);
+        entranceTop.addExit(topLeft);
+
+        leftBottom.addExit(bottomLeft);
+        bottomLeft.addExit(exitBottom, bottomRight);
+        bottomRight.addExit(rightBottom);
+        rightBottom.addExit(exitRight, rightTop);
+        rightTop.addExit(topRight);
+        topRight.addExit(exitTop, topLeft);
+        topLeft.addExit(leftTop);
+        leftTop.addExit(exitLeft, leftBottom);
+    }
+
+    public static WaypointManager getInstance() {
+        return WaypointManagerHolder.INSTANCE;
+    }
+
+    private static class WaypointManagerHolder {
+        private static final WaypointManager INSTANCE = new WaypointManager();
+    }
+
+    public Waypoint getRandomStartingWaypoint() {
+        Waypoint[] startingWaypoints = { entranceTop, entranceRight, entranceBottom, entranceLeft };
+
+        return startingWaypoints[random.nextInt(startingWaypoints.length)];
     }
 }

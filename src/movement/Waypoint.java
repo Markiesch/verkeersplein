@@ -1,20 +1,22 @@
 package movement;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 
-public class Waypoint {
+public final class Waypoint {
     private static final Random random = new Random();
 
     private final double x;
     private final double y;
 
-    private final Waypoint[] waypoints;
+    private final List<Waypoint> exits;
 
-    public Waypoint(double x, double y, Waypoint ...exits) {
+    public Waypoint(double x, double y) {
         this.x = x;
         this.y = y;
-
-        waypoints = exits;
+        exits = new ArrayList<>();
     }
 
     public double getX() {
@@ -25,7 +27,12 @@ public class Waypoint {
         return y;
     }
 
+    public void addExit(Waypoint ...exits) {
+        this.exits.addAll(Arrays.asList(exits));
+    }
+
     public Waypoint getRandomExit() {
-        return waypoints[random.nextInt(waypoints.length)];
+        if (exits.isEmpty()) return null;
+        return exits.get(random.nextInt(exits.size()));
     }
 }

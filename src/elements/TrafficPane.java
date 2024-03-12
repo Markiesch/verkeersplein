@@ -6,7 +6,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import movement.Waypoint;
-import movement.WaypointSequence;
+import movement.WaypointManager;
 import vehicles.Vehicle;
 
 import java.util.ArrayList;
@@ -49,46 +49,11 @@ public class TrafficPane extends Pane {
         };
 
         anim.start();
-
-        setOnMouseClicked(e -> {
-            System.out.println(e.getX() + ", " + e.getY());
-        });
     }
 
     public void spawnVehicle(Class<? extends Vehicle> clazz) {
-        WaypointSequence waypointSequence = new WaypointSequence(
-                // Left (start)
-                new Waypoint(0, WORLD_HEIGHT / 2 + ROAD_SIZE / 4),
-                new Waypoint((WORLD_WIDTH / 2) - ROUND_ABOUT_RADIUS, (WORLD_HEIGHT / 2) + ROAD_SIZE / 4),
-
-                // Bottom
-                new Waypoint(WORLD_WIDTH / 2 - ROAD_SIZE / 4, WORLD_HEIGHT / 2 + ROUND_ABOUT_RADIUS),
-                new Waypoint(WORLD_WIDTH / 2 + ROAD_SIZE / 4, WORLD_HEIGHT / 2 + ROUND_ABOUT_RADIUS),
-
-                // Right
-                new Waypoint((WORLD_WIDTH / 2) + ROUND_ABOUT_RADIUS, (WORLD_HEIGHT / 2) + ROAD_SIZE / 4),
-                new Waypoint((WORLD_WIDTH / 2) + ROUND_ABOUT_RADIUS, (WORLD_HEIGHT / 2) - ROAD_SIZE / 4),
-
-                // Top
-                new Waypoint(WORLD_WIDTH / 2 + ROAD_SIZE / 4, WORLD_HEIGHT / 2 - ROUND_ABOUT_RADIUS),
-                new Waypoint(WORLD_WIDTH / 2 - ROAD_SIZE / 4, WORLD_HEIGHT / 2 - ROUND_ABOUT_RADIUS),
-
-                // Left (end)
-                new Waypoint((WORLD_WIDTH / 2) - ROUND_ABOUT_RADIUS, (WORLD_HEIGHT / 2) - ROAD_SIZE / 4),
-                new Waypoint(0, WORLD_HEIGHT / 2 - ROAD_SIZE / 4)
-        );
-
-        // Debug waypoints
-        for (Waypoint waypoint : waypointSequence.getWaypoints()) {
-            new Rectangle(5, 5, Color.RED) {{
-                setX(waypoint.getX());
-                setY(waypoint.getY());
-                getChildren().add(this);
-            }};
-        }
-
         try {
-            Vehicle vehicle = clazz.getConstructor(WaypointSequence.class).newInstance(waypointSequence);
+            Vehicle vehicle = clazz.getConstructor(Waypoint.class).newInstance(WaypointManager.getInstance().getRandomStartingWaypoint());
             getChildren().add(vehicle);
             entities.add(vehicle);
         } catch (Exception e) {
