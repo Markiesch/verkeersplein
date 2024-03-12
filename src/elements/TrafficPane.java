@@ -12,37 +12,32 @@ import vehicles.Vehicle;
 import java.util.ArrayList;
 import java.util.List;
 
+import static util.Config.*;
+
 public class TrafficPane extends Pane {
     private static final Color ROAD_COLOR = Color.rgb(58, 47, 58);
     private static final Color BG_COLOR = Color.rgb(25, 22, 25);
-    private static final double INNER_RADIUS = 50;
-    private static final double ROUND_ABOUT_RADIUS = 100;
-    private static final double ROAD_SIZE = 100;
 
-    private static final double height = 750;
-    private static final double width = 750;
 
     private final List<Vehicle> entities = new ArrayList<>();
 
     public TrafficPane() {
-        Rectangle roadX = new Rectangle(width, ROAD_SIZE, ROAD_COLOR);
-        roadX.setY(height / 2 - ROAD_SIZE / 2);
-
-        Rectangle roadY = new Rectangle(ROAD_SIZE, height, ROAD_COLOR);
-        roadY.setX(width / 2 - ROAD_SIZE / 2);
-
+        Rectangle roadX = new Rectangle(WORLD_WIDTH, ROAD_SIZE, ROAD_COLOR);
+        roadX.setY(WORLD_HEIGHT / 2 - ROAD_SIZE / 2);
+        Rectangle roadY = new Rectangle(ROAD_SIZE, WORLD_HEIGHT, ROAD_COLOR);
+        roadY.setX(WORLD_WIDTH / 2 - ROAD_SIZE / 2);
 
         getChildren().addAll(
                 roadX,
                 roadY,
-                new Circle(width / 2, height / 2, ROUND_ABOUT_RADIUS + INNER_RADIUS, ROAD_COLOR),
-                new Circle(width / 2, height / 2, INNER_RADIUS, BG_COLOR)
+                new Circle(WORLD_WIDTH / 2, WORLD_HEIGHT / 2, ROUND_ABOUT_RADIUS + INNER_RADIUS, ROAD_COLOR),
+                new Circle(WORLD_WIDTH / 2, WORLD_HEIGHT / 2, INNER_RADIUS, BG_COLOR)
         );
 
         setBackground(new Background(new BackgroundFill(BG_COLOR, null, null)));
 
-        setMinWidth(width);
-        setMinHeight(height);
+        setMinWidth(WORLD_WIDTH);
+        setMinHeight(WORLD_HEIGHT);
 
         AnimationTimer anim = new AnimationTimer() {
             @Override
@@ -60,28 +55,27 @@ public class TrafficPane extends Pane {
         });
     }
 
-
     public void spawnVehicle(Class<? extends Vehicle> clazz) {
         WaypointSequence waypointSequence = new WaypointSequence(
                 // Left (start)
-                new Waypoint(0, height / 2 + ROAD_SIZE / 4),
-                new Waypoint((width / 2) - ROUND_ABOUT_RADIUS, (height / 2) + ROAD_SIZE / 4),
+                new Waypoint(0, WORLD_HEIGHT / 2 + ROAD_SIZE / 4),
+                new Waypoint((WORLD_WIDTH / 2) - ROUND_ABOUT_RADIUS, (WORLD_HEIGHT / 2) + ROAD_SIZE / 4),
 
                 // Bottom
-                new Waypoint(width / 2 - ROAD_SIZE / 4, height / 2 + ROUND_ABOUT_RADIUS),
-                new Waypoint(width / 2 + ROAD_SIZE / 4, height / 2 + ROUND_ABOUT_RADIUS),
+                new Waypoint(WORLD_WIDTH / 2 - ROAD_SIZE / 4, WORLD_HEIGHT / 2 + ROUND_ABOUT_RADIUS),
+                new Waypoint(WORLD_WIDTH / 2 + ROAD_SIZE / 4, WORLD_HEIGHT / 2 + ROUND_ABOUT_RADIUS),
 
                 // Right
-                new Waypoint((width / 2) + ROUND_ABOUT_RADIUS, (height / 2) + ROAD_SIZE / 4),
-                new Waypoint((width / 2) + ROUND_ABOUT_RADIUS, (height / 2) - ROAD_SIZE / 4),
+                new Waypoint((WORLD_WIDTH / 2) + ROUND_ABOUT_RADIUS, (WORLD_HEIGHT / 2) + ROAD_SIZE / 4),
+                new Waypoint((WORLD_WIDTH / 2) + ROUND_ABOUT_RADIUS, (WORLD_HEIGHT / 2) - ROAD_SIZE / 4),
 
                 // Top
-                new Waypoint(width / 2 + ROAD_SIZE / 4, height / 2 - ROUND_ABOUT_RADIUS),
-                new Waypoint(width / 2 - ROAD_SIZE / 4, height / 2 - ROUND_ABOUT_RADIUS),
+                new Waypoint(WORLD_WIDTH / 2 + ROAD_SIZE / 4, WORLD_HEIGHT / 2 - ROUND_ABOUT_RADIUS),
+                new Waypoint(WORLD_WIDTH / 2 - ROAD_SIZE / 4, WORLD_HEIGHT / 2 - ROUND_ABOUT_RADIUS),
 
                 // Left (end)
-                new Waypoint((width / 2) - ROUND_ABOUT_RADIUS, (height / 2) - ROAD_SIZE / 4),
-                new Waypoint(0, height / 2 - ROAD_SIZE / 4)
+                new Waypoint((WORLD_WIDTH / 2) - ROUND_ABOUT_RADIUS, (WORLD_HEIGHT / 2) - ROAD_SIZE / 4),
+                new Waypoint(0, WORLD_HEIGHT / 2 - ROAD_SIZE / 4)
         );
 
         // Debug waypoints

@@ -1,8 +1,6 @@
 package vehicles;
 
-import javafx.geometry.Point3D;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.GridPane;
 import javafx.scene.transform.Rotate;
 import movement.Waypoint;
 import movement.WaypointSequence;
